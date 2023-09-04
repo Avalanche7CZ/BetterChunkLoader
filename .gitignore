@@ -7,3 +7,9 @@ target/
 *.iml
 .classpath
 .project
+BetterChunkLoader-2.3.2.jar
+BetterChunkLoader-2.3.2/config.yml
+BetterChunkLoader-2.3.2/META-INF/MANIFEST.MF
+BetterChunkLoader-2.3.2/META-INF/maven/net.kaikk.mc/BetterChunkLoader/pom.properties
+BetterChunkLoader-2.3.2/META-INF/maven/net.kaikk.mc/BetterChunkLoader/pom.xml
+BetterChunkLoader-2.3.2/plugin.yml

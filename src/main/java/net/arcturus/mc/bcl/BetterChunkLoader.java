@@ -83,11 +83,9 @@ public class BetterChunkLoader extends JavaPlugin {
 				}
 				
 				this.getLogger().info("Loaded "+count+" always-on chunk loaders.");
-				
 				this.getLogger().info("Loading Listeners...");
-				this.getServer().getPluginManager().registerEvents(new EventListener(this), this);
+				this.getServer().getPluginManager().registerEvents(new EventListener(), this);
 				this.getCommand("betterchunkloader").setExecutor(new CommandExec(this));
-				
 				this.getLogger().info("Load complete.");
 			} catch (Exception e) {
 				e.printStackTrace();

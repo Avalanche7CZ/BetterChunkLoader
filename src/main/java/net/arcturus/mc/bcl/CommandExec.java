@@ -15,7 +15,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
 import net.arcturus.mc.bcl.datastore.IDataStore;
 
 public class CommandExec implements CommandExecutor {
@@ -47,10 +46,6 @@ public class CommandExec implements CommandExecutor {
 				return purge(sender);
 			case "reload":
 				return reload(sender);
-			case "enable":
-				return enable(sender);
-			case "disable":
-				return disable(sender);
 			}
 
 			sender.sendMessage(usage);
@@ -383,39 +378,7 @@ public class CommandExec implements CommandExecutor {
 		sender.sendMessage(ChatColor.RED + "BetterChunkLoader reloaded.");
 		return true;
 	}
-	
-	private boolean enable(CommandSender sender) {
-		if (!sender.hasPermission("betterchunkloader.enable")) {
-			sender.sendMessage(Messages.get("PermissionDenied"));
-			return false;
-		}
-		
-		if (instance.enabled) {
-			sender.sendMessage(ChatColor.RED + "BetterChunkLoader is already enabled!");
-			return false;
-		}
-		
-		instance.enable();
-		sender.sendMessage(ChatColor.GREEN + "BetterChunkLoader has been enabled!");
-		return true;
-	}
-	
-	private boolean disable(CommandSender sender) {
-		if (!sender.hasPermission("betterchunkloader.disable")) {
-			sender.sendMessage(Messages.get("PermissionDenied"));
-			return false;
-		}
-		
-		if (!instance.enabled) {
-			sender.sendMessage(ChatColor.RED + "BetterChunkLoader is already disabled!");
-			return false;
-		}
-		
-		instance.disable();
-		sender.sendMessage(ChatColor.GREEN + "BetterChunkLoader has been disabled!");
-		return true;
-	}
-	
+
 	static String chunksInfo(OfflinePlayer player) {
 		IDataStore dataStore = DataStoreManager.getDataStore();
 		int freeAlwaysOn = dataStore.getAlwaysOnFreeChunksAmount(player.getUniqueId());
