@@ -1,8 +1,6 @@
 package net.arcturus.mc.bcl;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -10,21 +8,17 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import net.kaikk.mc.bcl.forgelib.ChunkLoader;
+
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.World;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
-
-import net.kaikk.mc.bcl.forgelib.ChunkLoader;
 
 @XmlRootElement
 @XmlAccessorType(value=XmlAccessType.NONE)
@@ -34,8 +28,6 @@ public class CChunkLoader extends ChunkLoader implements InventoryHolder {
 	private BlockLocation loc;
 	private Date creationDate;
 	private boolean isAlwaysOn;
-	
-	private Map<UUID,BukkitTask> currentVisualizations = new HashMap<UUID,BukkitTask>();
 	
 	public CChunkLoader() { }
 	
@@ -76,7 +68,7 @@ public class CChunkLoader extends ChunkLoader implements InventoryHolder {
 	
 	public String getOwnerName() {
 		if (this.isAdminChunkLoader()) {
-			return Messages.get("Admin");
+			return "Admin";
 		}
 		return this.getOfflinePlayer().getName();
 	}
@@ -94,7 +86,11 @@ public class CChunkLoader extends ChunkLoader implements InventoryHolder {
 	}
 	
 	public String info() {
-		return Messages.get("ChunkLoaderInfo").replace("[owner]", this.getOwnerName()).replace("[location]", this.loc.toString()).replace("[world]", this.worldName).replace("[chunkX]", this.chunkX+"").replace("[chunkZ]", this.chunkZ+"").replace("[size]", this.sizeX());
+		return ChatColor.GOLD + "== Chunk loader info ==\n"
+				+ ChatColor.WHITE + "Owner: "+this.getOwnerName()+"\n"
+						+ "Position: "+this.loc.toString()+"\n"
+						+ "Chunk: "+this.worldName+":"+this.chunkX+","+this.chunkZ+"\n"
+						+ "Size: "+this.sizeX();
 	}
 	
 	public boolean isLoadable() {
@@ -106,9 +102,9 @@ public class CChunkLoader extends ChunkLoader implements InventoryHolder {
 			return false;
 		}
 		if (isAlwaysOn) {
-			return this.loc.getBlock().getType()==BetterChunkLoader.instance().config().alwaysOnMaterial && this.loc.getBlock().getData() == BetterChunkLoader.instance().config().alwaysOnMeta;
+			return this.loc.getBlock().getType()==Material.DIAMOND_BLOCK;
 		} else {
-			return this.loc.getBlock().getType()==BetterChunkLoader.instance().config().onlineOnlyMaterial && this.loc.getBlock().getData() == BetterChunkLoader.instance().config().onlineOnlyMeta;
+			return this.loc.getBlock().getType()==Material.IRON_BLOCK;
 		}
 	}
 	
@@ -173,16 +169,16 @@ public class CChunkLoader extends ChunkLoader implements InventoryHolder {
 	
 	/** Shows the chunk loader's user interface to the specified player */
 	void showUI(Player player) {
-		String title = (this.range!=-1 ? Messages.get("ChunkLoaderGUITitle").replace("[owner]", this.getOwnerName()).replace("[location]", this.getLoc().toString()) : this.isAdminChunkLoader() ? Messages.get("NewAdminChunkLoaderGUITitle") : Messages.get("NewChunkLoaderGUITitle"));
+		String title = (this.range!=-1 ? "BCL:"+this.getOwnerName()+"@"+this.getLoc() : "New "+(this.isAdminChunkLoader()?"Admin ":"")+"BetterChunkLoader");
 		if (title.length()>32) {
 			title=title.substring(0, 32);
 		}
 		Inventory inventory = Bukkit.createInventory(this, 9, title);
 
-		addInventoryOption(inventory, 0, Material.REDSTONE_TORCH_ON, Messages.get("Remove"));
+		addInventoryOption(inventory, 0, Material.REDSTONE_TORCH_ON, "Remove");
 		
 		for (byte i=0; i<5; i++) {
-			addInventoryOption(inventory, i+2, Material.MAP, Messages.get("Size").replace("[size]", this.sizeX(i)+"").replace("[selected]", (this.getRange()==i ? Messages.get("Selected") : "")));
+			addInventoryOption(inventory, i+2, Material.MAP, "Size "+this.sizeX(i)+(this.getRange()==i?" [selected]":""));
 		}
 		
 		player.openInventory(inventory);
@@ -226,75 +222,5 @@ public class CChunkLoader extends ChunkLoader implements InventoryHolder {
 	
 	public boolean isAdminChunkLoader() {
 		return adminUUID.equals(this.owner);
-	}
-	
-	@SuppressWarnings("deprecation")
-	public void showCorners(Player player) {
-		World world = Bukkit.getWorld(worldName);
-		
-		for (int z = this.chunkZ - range; z <= this.chunkZ + range; z++) {
-			for (int i = 0; i < 16; i+=5) {
-				for (int y = 0; y < 255; y+=40) {
-					player.sendBlockChange(new Location(world, ((this.chunkX - range)<<4), y, (z<<4)+i), Material.GLASS, (byte) 0);
-					player.sendBlockChange(new Location(world, ((this.chunkX + range)<<4)+15, y, (z<<4)+i), Material.GLASS, (byte) 0);
-				}
-			}
-		}
-		
-		for (int x = this.chunkX - range; x <= this.chunkX + range; x++) {
-			for (int i = 0; i < 16; i+=5) {
-				for (int y = 0; y < 255; y+=40) {
-					player.sendBlockChange(new Location(world, (x<<4)+i, y, ((this.chunkZ - range)<<4)), Material.GLASS, (byte) 0);
-					player.sendBlockChange(new Location(world, (x<<4)+i, y, ((this.chunkZ + range)<<4)+15), Material.GLASS, (byte) 0);
-				}
-			}
-		}
-
-		BukkitTask v = this.currentVisualizations.put(player.getUniqueId(), 
-				new BukkitRunnable() {
-					@Override
-					public void run() {
-						if (player.isOnline()) {
-							hideCorners(player);
-						}
-					}
-				}.runTaskLater(BetterChunkLoader.instance(), 600L)
-			);
-		
-		if (v != null) {
-			v.cancel();
-		}
-	}
-	
-	@SuppressWarnings("deprecation")
-	public void hideCorners(Player player) {
-		World world = Bukkit.getWorld(worldName);
-		
-		for (int z = this.chunkZ - range; z <= this.chunkZ + range; z++) {
-			for (int i = 0; i < 16; i+=5) {
-				for (int y = 0; y < 255; y+=40) {
-					Location l = new Location(world, ((this.chunkX - range)<<4), y, (z<<4)+i);
-					Block b = l.getBlock();
-					player.sendBlockChange(l, b.getType(), b.getData());
-					l.setX(((this.chunkX + range)<<4)+15);
-					b = l.getBlock();
-					player.sendBlockChange(l, b.getType(), b.getData());
-				}
-			}
-		}
-		
-		for (int x = this.chunkX - range; x <= this.chunkX + range; x++) {
-			for (int i = 0; i < 16; i+=5) {
-				for (int y = 0; y < 255; y+=40) {
-					Location l = new Location(world, (x<<4)+i, y, ((this.chunkZ - range)<<4));
-					Block b = l.getBlock();
-					player.sendBlockChange(l, b.getType(), b.getData());
-					
-					l.setZ(((this.chunkZ + range)<<4)+15);
-					b = l.getBlock();
-					player.sendBlockChange(l, b.getType(), b.getData());
-				}
-			}
-		}
 	}
 }

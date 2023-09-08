@@ -1,6 +1,6 @@
 name: BetterChunkLoader
 main: net.arcturus.mc.bcl.BetterChunkLoader
-version: 1.0.1
+version: 1.0.2
 
 commands:
    betterchunkloader:
@@ -9,10 +9,10 @@ commands:
 
 permissions:
    betterchunkloader.onlineonly:
-      description: Create new onlineonly chunk loaders
+      description: Permission to create new onlineonly chunk loaders
       default: false
    betterchunkloader.alwayson:
-      description: Create new alwayson chunk loaders
+      description: Permission to create new alwayson chunk loaders
       default: false
    betterchunkloader.list.own:
       description: List own chunk loaders
@@ -35,15 +35,12 @@ permissions:
    betterchunkloader.delete:
       description: Delete player chunk loaders
       default: op
-   betterchunkloader.chunks:
-      description: Manage players chunks amount
-      default: op
-   betterchunkloader.purge:
-      description: Allows the use of the purge command
-      default: op
    betterchunkloader.reload:
       description: Reload the plugin
       default: op
-   betterchunkloader.chunks.get:
-      description: get information about the chunk amount
+   betterchunkloader.chunks.add:
+      description: Add chunks to player
+      default: op
+   betterchunkloader.chunks.set:
+      description: Set number of chunks
       default: op

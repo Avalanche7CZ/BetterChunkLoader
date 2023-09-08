@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.arcturus.mc</groupId>
 	<artifactId>BetterChunkLoader</artifactId>
-	<version>1.0.1-ARCTURUS</version>
+	<version>1.0.2-ARCTURUS</version>
 	<build>
 		<plugins>
 			<plugin>
@@ -46,6 +46,13 @@
 			<version>1.7.9-R0.2</version>
 			<scope>system</scope>
 			<systemPath>${project.basedir}/libs/spigot-1.7.10-SNAPSHOT-b1657.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>net.minecraftforge</groupId>
+			<artifactId>forge</artifactId>
+			<version>1.7.10-10.13.4.1614</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/libs/forge-1.7.10-10.13.4.1614-1.7.10-universal.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>org.bukkit</groupId>
