@@ -16,6 +16,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 public class CommandExec implements CommandExecutor {
 	BetterChunkLoader instance;
@@ -228,7 +229,7 @@ public class CommandExec implements CommandExecutor {
 		final String usage = "Usage: /"+label+" chunks (add|set) (PlayerName) (alwayson|onlineonly) (amount)";
 
 		if (args.length < 5) {
-			sender.sendMessage(usage);
+			sender.sendMessage(chunksInfo((Player) sender));
 			return false;
 		}
 

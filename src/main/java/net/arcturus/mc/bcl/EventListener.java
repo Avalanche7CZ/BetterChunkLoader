@@ -25,6 +25,21 @@ import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class EventListener implements Listener {
+
+	private BetterChunkLoader instance;
+	private int alwaysOnBlockId;
+	private int alwaysOnBlockData; // Add a variable for block metadata
+	private int onlineOnlyBlockId;
+	private int onlineOnlyBlockData; // Add a variable for block metadata
+
+	EventListener(BetterChunkLoader instance) {
+		this.instance = instance;
+		this.alwaysOnBlockId = instance.getConfig().getInt("alwaysOnBlockId", 57);
+		this.alwaysOnBlockData = instance.getConfig().getInt("alwaysOnBlockData", 0);
+		this.onlineOnlyBlockId = instance.getConfig().getInt("onlineOnlyBlockId", 42);
+		this.onlineOnlyBlockData = instance.getConfig().getInt("onlineOnlyBlockData", 0);
+	}
+
 	@EventHandler(ignoreCancelled=true, priority = EventPriority.MONITOR)
 	void onPlayerInteract(PlayerInteractEvent event) {
 		//BetterChunkLoader.instance().getLogger().info("PIE");
@@ -35,8 +50,8 @@ public class EventListener implements Listener {
 		if (clickedBlock==null || player==null) {
 			return;
 		}
-		
-		if (clickedBlock.getType()==Material.DIAMOND_BLOCK || clickedBlock.getType()==Material.IRON_BLOCK) {
+
+		if (clickedBlock.getTypeId() == alwaysOnBlockId || clickedBlock.getTypeId() == onlineOnlyBlockId) {
 			if (action==Action.RIGHT_CLICK_BLOCK) {
 				CChunkLoader chunkLoader = DataStoreManager.getDataStore().getChunkLoaderAt(new BlockLocation(clickedBlock.getLocation()));
 				if (player.getItemInHand().getType()==Material.BLAZE_ROD) {
@@ -49,7 +64,7 @@ public class EventListener implements Listener {
 					} else {
 						if (canBreak(clickedBlock, player)) {
 							UUID uid=player.getUniqueId();
-							if (clickedBlock.getType()==Material.DIAMOND_BLOCK) {
+							if (clickedBlock.getTypeId() == alwaysOnBlockId && clickedBlock.getData() == alwaysOnBlockData) {
 								if (!player.hasPermission("betterchunkloader.alwayson")) {
 									player.sendMessage(ChatColor.RED + "You don't have the permission to create always-on chunk loaders."+(player.isOp()?" (betterchunkloader.alwayson is needed)":""));
 									return;
@@ -57,7 +72,7 @@ public class EventListener implements Listener {
 								if (player.isSneaking() && player.hasPermission("betterchunkloader.adminloader")) {
 									uid=CChunkLoader.adminUUID;
 								}
-							} else if (clickedBlock.getType()==Material.IRON_BLOCK) {
+							} else if (clickedBlock.getTypeId() == onlineOnlyBlockId && clickedBlock.getData() == onlineOnlyBlockData) {
 								if (!player.hasPermission("betterchunkloader.onlineonly")) {
 									player.sendMessage(ChatColor.RED + "You don't have the permission to create online-only chunk loaders."+(player.isOp()?" (betterchunkloader.onlineonly is needed)":""));
 									return;
@@ -76,7 +91,7 @@ public class EventListener implements Listener {
 					if (chunkLoader!=null) {
 						player.sendMessage(chunkLoader.info());
 					} else {
-						player.sendMessage(ChatColor.GOLD + "Iron and Diamond blocks can be converted into chunk loaders. Right click it with a blaze rod.");
+						player.sendMessage(ChatColor.GOLD + "This Blocks can be converted into chunk loaders. Right click it with a blaze rod.");
 					}
 				}
 			}
@@ -86,7 +101,11 @@ public class EventListener implements Listener {
 	@EventHandler(ignoreCancelled=true, priority = EventPriority.HIGH)
 	void onBlockBreak(BlockBreakEvent event) {
 		Block block = event.getBlock();
-		if (block==null || (block.getType()!=Material.DIAMOND_BLOCK && block.getType()!=Material.IRON_BLOCK)) {
+		if (block == null || (block.getTypeId() != alwaysOnBlockId && block.getTypeId() != onlineOnlyBlockId)) {
+			return;
+		}
+
+		if (block.getData() != alwaysOnBlockData && block.getData() != onlineOnlyBlockData) {
 			return;
 		}
 

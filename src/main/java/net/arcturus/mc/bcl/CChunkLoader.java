@@ -10,6 +10,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import net.kaikk.mc.bcl.forgelib.ChunkLoader;
 
+import net.minecraft.server.v1_7_R4.Block;
+import net.minecraft.server.v1_7_R4.Item;
+import net.minecraft.server.v1_7_R4.ItemBlock;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -28,9 +31,9 @@ public class CChunkLoader extends ChunkLoader implements InventoryHolder {
 	private BlockLocation loc;
 	private Date creationDate;
 	private boolean isAlwaysOn;
-	
+
 	public CChunkLoader() { }
-	
+
 	public CChunkLoader(int chunkX, int chunkZ, String worldName, byte range, UUID owner, BlockLocation loc, Date creationDate, boolean isAlwaysOn) {
 		super(chunkX, chunkZ, worldName, range);
 		this.owner = owner;
@@ -38,7 +41,7 @@ public class CChunkLoader extends ChunkLoader implements InventoryHolder {
 		this.creationDate = creationDate;
 		this.isAlwaysOn = isAlwaysOn;
 	}
-	
+
 	public CChunkLoader(String location, byte range, UUID owner, Date creationDate, boolean isAlwaysOn) {
 		super(0, 0, "", range);
 		this.setLocationString(location);
@@ -54,81 +57,93 @@ public class CChunkLoader extends ChunkLoader implements InventoryHolder {
 	public OfflinePlayer getOfflinePlayer() {
 		return BetterChunkLoader.instance().getServer().getOfflinePlayer(this.owner);
 	}
-	
+
 	public Player getPlayer() {
 		return BetterChunkLoader.instance().getServer().getPlayer(this.owner);
 	}
-	
+
 	public long getOwnerLastPlayed() {
 		if (this.isAdminChunkLoader()) {
 			return System.currentTimeMillis();
 		}
 		return BetterChunkLoader.getPlayerLastPlayed(owner);
 	}
-	
+
 	public String getOwnerName() {
 		if (this.isAdminChunkLoader()) {
 			return "Admin";
 		}
 		return this.getOfflinePlayer().getName();
 	}
-	
+
 	public int side() {
 		return 1+(super.getRange()*2);
 	}
-	
+
 	public int size() {
 		return this.side()*this.side();
 	}
-	
+
 	public String sizeX() {
 		return this.side()+"x"+this.side();
 	}
-	
+
 	public String info() {
 		return ChatColor.GOLD + "== Chunk loader info ==\n"
 				+ ChatColor.WHITE + "Owner: "+this.getOwnerName()+"\n"
-						+ "Position: "+this.loc.toString()+"\n"
-						+ "Chunk: "+this.worldName+":"+this.chunkX+","+this.chunkZ+"\n"
-						+ "Size: "+this.sizeX();
+				+ "Position: "+this.loc.toString()+"\n"
+				+ "Chunk: "+this.worldName+":"+this.chunkX+","+this.chunkZ+"\n"
+				+ "Size: "+this.sizeX();
 	}
-	
+
 	public boolean isLoadable() {
 		return (this.isOwnerOnline() || (this.isAlwaysOn && !this.isExpired())) && this.blockCheck();
 	}
-	
+
 	public boolean blockCheck() {
-		if (this.loc.getBlock()==null) {
+		if (this.loc.getBlock() == null) {
 			return false;
 		}
+
+		int blockId = this.loc.getBlock().getTypeId();
+		int blockData = this.loc.getBlock().getData();
+
+		int expectedBlockId;
+		int expectedBlockData;
+
 		if (isAlwaysOn) {
-			return this.loc.getBlock().getType()==Material.DIAMOND_BLOCK;
+			expectedBlockId = BetterChunkLoader.instance().config().alwaysOnBlockId;
+			expectedBlockData = BetterChunkLoader.instance().config().alwaysOnBlockData;
 		} else {
-			return this.loc.getBlock().getType()==Material.IRON_BLOCK;
+			expectedBlockId = BetterChunkLoader.instance().config().onlineOnlyBlockId;
+			expectedBlockData = BetterChunkLoader.instance().config().onlineOnlyBlockData;
 		}
+
+		// Check if both the block ID and metadata match
+		return blockId == expectedBlockId && blockData == expectedBlockData;
 	}
-	
+
 	public boolean isOwnerOnline() {
 		return this.getPlayer()!=null;
 	}
-	
+
 	@Override
 	public String toString() {
 		return (this.isAlwaysOn?"y":"n")+" - "+this.sizeX()+" - "+this.loc.toString();
 	}
-	
+
 	public UUID getOwner() {
 		return owner;
 	}
-	
+
 	public BlockLocation getLoc() {
 		return loc;
 	}
-	
+
 	public String getLocationString() {
 		return loc.toString();
 	}
-	
+
 	@XmlAttribute(name="loc")
 	public void setLocationString(String location) {
 		try {
@@ -137,9 +152,9 @@ public class CChunkLoader extends ChunkLoader implements InventoryHolder {
 			Integer x=Integer.valueOf(coords[0]);
 			Integer y=Integer.valueOf(coords[1]);
 			Integer z=Integer.valueOf(coords[2]);
-			
+
 			this.loc=new BlockLocation(s[0], x, y, z);
-			
+
 			super.worldName=s[0];
 			super.chunkX=this.loc.getChunkX();
 			super.chunkZ=this.loc.getChunkZ();
@@ -147,26 +162,26 @@ public class CChunkLoader extends ChunkLoader implements InventoryHolder {
 			throw new RuntimeException("Wrong chunk loader location: "+location);
 		}
 	}
-	
+
 	public Date getCreationDate() {
 		return creationDate;
 	}
-	
+
 	public boolean isAlwaysOn() {
 		return isAlwaysOn;
 	}
-	
+
 	@XmlAttribute(name="date")
 	public void setCreationDate(Date date) {
 		this.creationDate=date;
 	}
-	
+
 	/** Ignore this, it'll always return null */
 	@Override
 	public Inventory getInventory() {
 		return null;
 	}
-	
+
 	/** Shows the chunk loader's user interface to the specified player */
 	void showUI(Player player) {
 		String title = (this.range!=-1 ? "BCL:"+this.getOwnerName()+"@"+this.getLoc() : "New "+(this.isAdminChunkLoader()?"Admin ":"")+"BetterChunkLoader");
@@ -176,18 +191,18 @@ public class CChunkLoader extends ChunkLoader implements InventoryHolder {
 		Inventory inventory = Bukkit.createInventory(this, 9, title);
 
 		addInventoryOption(inventory, 0, Material.REDSTONE_TORCH_ON, "Remove");
-		
+
 		for (byte i=0; i<5; i++) {
 			addInventoryOption(inventory, i+2, Material.MAP, "Size "+this.sizeX(i)+(this.getRange()==i?" [selected]":""));
 		}
-		
+
 		player.openInventory(inventory);
 	}
-	
+
 	private String sizeX(byte i) {
 		return this.side(i)+"x"+this.side(i);
 	}
-	
+
 	private int side(byte i) {
 		return 1+(i*2);
 	}
@@ -199,7 +214,7 @@ public class CChunkLoader extends ChunkLoader implements InventoryHolder {
 		is.setItemMeta(im);
 		inventory.setItem(position, is);
 	}
-	
+
 	@XmlAttribute(name="own")
 	void setOwner(UUID owner) {
 		this.owner = owner;
@@ -209,17 +224,17 @@ public class CChunkLoader extends ChunkLoader implements InventoryHolder {
 	void setAlwaysOn(boolean isAlwaysOn) {
 		this.isAlwaysOn = isAlwaysOn;
 	}
-	
+
 	@Override
 	public byte getRange() {
 		return super.range;
 	}
-	
+
 	@XmlAttribute(name="r")
 	public void setRange(byte range) {
 		super.range=range;
 	}
-	
+
 	public boolean isAdminChunkLoader() {
 		return adminUUID.equals(this.owner);
 	}

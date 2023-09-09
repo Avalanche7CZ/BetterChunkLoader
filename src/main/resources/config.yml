@@ -5,6 +5,10 @@ MaxHoursOffline: 168
 DefaultChunksAmount:
   AlwaysOn: 5
   OnlineOnly: 50
+
+# Chunk Loaders block types
+alwaysOnBlockId: 57
+onlineOnlyBlockId: 42
   
 # Data Store to use, XML or MySQL, but extensions can add custom data stores
 DataStore: XML
