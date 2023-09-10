@@ -224,37 +224,18 @@ public class CommandExec implements CommandExecutor {
 		return true;
 	}
 
-	private int getMaxChunksAllowed(Player player, boolean isOnlineOnly) {
-		if (player.hasPermission("betterchunkloader.admin")) {
-			// Admins have no maximum limit
-			return Integer.MAX_VALUE;
-		} else {
-			String permissionPrefix = isOnlineOnly ? "betterchunkloader.onlineonly." : "betterchunkloader.alwayson.";
-
-			int defaultLimit = isOnlineOnly ? this.instance.config().maxChunksAmountOnlineOnly : this.instance.config().maxChunksAmountAlwaysOn;
-
-			for (int i = 1000; i >= 0; i--) {
-				if (player.hasPermission(permissionPrefix + i)) {
-					return i;
-				}
-			}
-
-			// No permission-based limit found, return the default limit
-			return defaultLimit;
-		}
-	}
-
 	@SuppressWarnings("deprecation")
 	private boolean chunks(CommandSender sender, String label, String[] args) {
 		final String usage = "Usage: /"+label+" chunks (add|set) (PlayerName) (alwayson|onlineonly) (amount)";
 
 		if (args.length < 5) {
-			sender.sendMessage(chunksInfo((Player) sender));
+			sender.sendMessage(chunksInfo((OfflinePlayer) sender));
 			return false;
 		}
 
 		if (!sender.hasPermission("betterchunkloader.chunks")) {
 			sender.sendMessage(ChatColor.RED + "You don't have permission to run this command.");
+			sender.sendMessage(chunksInfo((OfflinePlayer) sender));
 			return false;
 		}
 
@@ -275,42 +256,32 @@ public class CommandExec implements CommandExecutor {
 		if (args[1].equalsIgnoreCase("add")) {
 			PlayerData playerData = DataStoreManager.getDataStore().getPlayerData(player.getUniqueId());
 			if (sender.hasPermission("betterchunkloaders.chunks.add")) {
-				boolean isOnlineOnly = args[3].equalsIgnoreCase("onlineonly");
-
-				int maxChunksAllowed;
-				int currentChunks;
-				String chunksType;
-				int maxChunksLimit;
-
-				if (isOnlineOnly) {
-					maxChunksAllowed = getMaxChunksAllowed((Player) player, true);
-					currentChunks = playerData.getOnlineOnlyChunksAmount();
-					chunksType = "online-only";
-					maxChunksLimit = this.instance.config().maxChunksAmountOnlineOnly;
-				} else {
-					maxChunksAllowed = getMaxChunksAllowed((Player) player, false);
-					currentChunks = playerData.getAlwaysOnChunksAmount();
-					chunksType = "always-on";
-					maxChunksLimit = this.instance.config().maxChunksAmountAlwaysOn;
-				}
-
-				if (currentChunks + amount > maxChunksAllowed) {
-					if (args.length != 5 && args[5].equalsIgnoreCase("max")) {
-						amount = maxChunksAllowed - currentChunks;
-					} else if (args.length == 5 || !args[5].equalsIgnoreCase("force")) {
-						sender.sendMessage("Couldn't add " + amount + " " + chunksType + " chunks to " + player.getName() +
-								" because it would exceed the " + chunksType + " chunks limit of " + maxChunksLimit);
-						return false;
+				if (args[3].equalsIgnoreCase("alwayson")) {
+					if (playerData.getAlwaysOnChunksAmount()+amount>this.instance.config().maxChunksAmountAlwaysOn) {
+						if (args.length != 5 && args[5].equalsIgnoreCase("max")) {
+							amount = this.instance.config().maxChunksAmountAlwaysOn;
+						} else if (args.length == 5 || !args[5].equalsIgnoreCase("force")) {
+							sender.sendMessage("Couldn't add "+amount+" always-on chunks to "+player.getName()+" because it would exceed the always-on chunks limit of "+this.instance.config().maxChunksAmountAlwaysOn);
+							return false;
+						}
 					}
-				}
-
-				if (isOnlineOnly) {
-					DataStoreManager.getDataStore().addOnlineOnlyChunksLimit(player.getUniqueId(), amount);
-				} else {
 					DataStoreManager.getDataStore().addAlwaysOnChunksLimit(player.getUniqueId(), amount);
+					sender.sendMessage("Added " + amount + " always-on chunks to " + player.getName());
+				} else if (args[3].equalsIgnoreCase("onlineonly")) {
+					if (playerData.getOnlineOnlyChunksAmount()+amount>this.instance.config().maxChunksAmountOnlineOnly) {
+						if (args.length != 5 && args[5].equalsIgnoreCase("max")) {
+							amount = this.instance.config().maxChunksAmountOnlineOnly;
+						} else if (args.length == 5 || !args[5].equalsIgnoreCase("force")) {
+							sender.sendMessage("Couldn't add "+amount+" online-only chunks to "+player.getName()+" because it would exceed the online-only chunks limit of "+this.instance.config().maxChunksAmountOnlineOnly);
+							return false;
+						}
+					}
+					DataStoreManager.getDataStore().addOnlineOnlyChunksLimit(player.getUniqueId(), amount);
+					sender.sendMessage("Added " + amount + " online-only chunks to " + player.getName());
+				} else {
+					sender.sendMessage("Invalid argument " + args[3] + "\n" + usage);
+					return false;
 				}
-
-				sender.sendMessage("Added " + amount + " " + chunksType + " chunks to " + player.getName());
 			} else {
 				sender.sendMessage("You do not have permission to use this command.");
 				return false;
@@ -322,34 +293,16 @@ public class CommandExec implements CommandExecutor {
 					return false;
 				}
 
-				boolean isOnlineOnly = args[3].equalsIgnoreCase("onlineonly");
-
-				String chunksType;
-				if (isOnlineOnly) {
-					chunksType = "online-only";
+				if (args[3].equalsIgnoreCase("alwayson")) {
+					DataStoreManager.getDataStore().setAlwaysOnChunksLimit(player.getUniqueId(), amount);
+					sender.sendMessage("Set " + amount + " always-on chunks to " + player.getName());
+				} else if (args[3].equalsIgnoreCase("onlineonly")) {
+					DataStoreManager.getDataStore().setOnlineOnlyChunksLimit(player.getUniqueId(), amount);
+					sender.sendMessage("Set " + amount + " online-only chunks to " + player.getName());
 				} else {
-					chunksType = "always-on";
-				}
-
-				int maxChunksLimit;
-				if (isOnlineOnly) {
-					maxChunksLimit = this.instance.config().maxChunksAmountOnlineOnly;
-				} else {
-					maxChunksLimit = this.instance.config().maxChunksAmountAlwaysOn;
-				}
-
-				if (amount > maxChunksLimit) {
-					sender.sendMessage("Cannot set more than " + maxChunksLimit + " " + chunksType + " chunks for " + player.getName());
+					sender.sendMessage("Invalid argument " + args[3] + "\n" + usage);
 					return false;
 				}
-
-				if (isOnlineOnly) {
-					DataStoreManager.getDataStore().setOnlineOnlyChunksLimit(player.getUniqueId(), amount);
-				} else {
-					DataStoreManager.getDataStore().setAlwaysOnChunksLimit(player.getUniqueId(), amount);
-				}
-
-				sender.sendMessage("Set " + amount + " " + chunksType + " chunks to " + player.getName());
 			} else {
 				sender.sendMessage("You do not have permission to use this command.");
 				return false;
@@ -360,7 +313,6 @@ public class CommandExec implements CommandExecutor {
 		}
 
 		return true;
-
 	}
 
 	@SuppressWarnings("deprecation")
