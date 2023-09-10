@@ -1,3 +1,5 @@
+# BetterChunkLoaders
+# Version 1.0.4
 # If a player is offline more than this number of hours at server start, his chunk loaders won't be loaded
 MaxHoursOffline: 168
 
@@ -6,7 +8,12 @@ DefaultChunksAmount:
   AlwaysOn: 5
   OnlineOnly: 50
 
-# Chunk Loaders block types
+# Max amount of chunks for each player
+MaxChunksAmount:
+  AlwaysOn: 50
+  OnlineOnly: 150
+
+# Chunk Loaders block types ID:Metadata or ID
 alwaysOnBlockId: 57
 onlineOnlyBlockId: 42
   

@@ -8,8 +8,10 @@ import net.arcturus.mc.bcl.datastore.MySqlDataStore;
 import net.arcturus.mc.bcl.datastore.XmlDataStore;
 import net.kaikk.mc.bcl.forgelib.BCLForgeLib;
 
+import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class BetterChunkLoader extends JavaPlugin {
@@ -29,7 +31,7 @@ public class BetterChunkLoader extends JavaPlugin {
 		try {
 			Class.forName("net.minecraftforge.common.ForgeVersion");
 		} catch (ClassNotFoundException e) {
-			throw new RuntimeException("Cauldron/KCauldron and BCLForgeLib are needed to run this plugin!");
+			throw new RuntimeException("Thermos/KCauldron/Crucible and BCLForgeLib are needed to run this plugin!");
 		}
 		
 		// check if BCLForgeLib is present
@@ -38,7 +40,13 @@ public class BetterChunkLoader extends JavaPlugin {
 		} catch (ClassNotFoundException e) {
 			throw new RuntimeException("BCLForgeLib is needed to run this plugin!");
 		}
-		
+
+		Bukkit.getConsoleSender().sendMessage("=========================");
+		Bukkit.getConsoleSender().sendMessage("BetterChunkLoader");
+		Bukkit.getConsoleSender().sendMessage("Version " + getDescription().getVersion());
+		Bukkit.getConsoleSender().sendMessage("Fork Author: Avalanche7CZ");
+		Bukkit.getConsoleSender().sendMessage("=========================");
+
 		instance=this;
 		
 		try {
@@ -72,8 +80,7 @@ public class BetterChunkLoader extends JavaPlugin {
 			this.getLogger().info("Loading Listeners...");
 			this.getServer().getPluginManager().registerEvents(new EventListener(this), this);
 			this.getCommand("betterchunkloader").setExecutor(new CommandExec(this));
-			
-			this.getLogger().info("Load complete.");
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			this.getLogger().warning("Load failed!");

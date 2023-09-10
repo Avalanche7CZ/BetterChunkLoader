@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.arcturus.mc</groupId>
 	<artifactId>BetterChunkLoader</artifactId>
-	<version>1.0.3-ARCTURUS</version>
+	<version>1.0.4-ARCTURUS</version>
 	<build>
 		<plugins>
 			<plugin>

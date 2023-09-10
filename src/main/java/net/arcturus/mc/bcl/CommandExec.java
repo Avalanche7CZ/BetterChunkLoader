@@ -223,7 +223,27 @@ public class CommandExec implements CommandExecutor {
 		}
 		return true;
 	}
-	
+
+	private int getMaxChunksAllowed(Player player, boolean isOnlineOnly) {
+		if (player.hasPermission("betterchunkloader.admin")) {
+			// Admins have no maximum limit
+			return Integer.MAX_VALUE;
+		} else {
+			String permissionPrefix = isOnlineOnly ? "betterchunkloader.onlineonly." : "betterchunkloader.alwayson.";
+
+			int defaultLimit = isOnlineOnly ? this.instance.config().maxChunksAmountOnlineOnly : this.instance.config().maxChunksAmountAlwaysOn;
+
+			for (int i = 1000; i >= 0; i--) {
+				if (player.hasPermission(permissionPrefix + i)) {
+					return i;
+				}
+			}
+
+			// No permission-based limit found, return the default limit
+			return defaultLimit;
+		}
+	}
+
 	@SuppressWarnings("deprecation")
 	private boolean chunks(CommandSender sender, String label, String[] args) {
 		final String usage = "Usage: /"+label+" chunks (add|set) (PlayerName) (alwayson|onlineonly) (amount)";
@@ -252,20 +272,45 @@ public class CommandExec implements CommandExecutor {
 			return false;
 		}
 
-		sender.sendMessage(chunksInfo(player)); // Send chunksInfo message
-
 		if (args[1].equalsIgnoreCase("add")) {
+			PlayerData playerData = DataStoreManager.getDataStore().getPlayerData(player.getUniqueId());
 			if (sender.hasPermission("betterchunkloaders.chunks.add")) {
-				if (args[3].equalsIgnoreCase("alwayson")) {
-					DataStoreManager.getDataStore().addAlwaysOnChunksLimit(player.getUniqueId(), amount);
-					sender.sendMessage("Added " + amount + " always-on chunks to " + player.getName());
-				} else if (args[3].equalsIgnoreCase("onlineonly")) {
-					DataStoreManager.getDataStore().addOnlineOnlyChunksLimit(player.getUniqueId(), amount);
-					sender.sendMessage("Added " + amount + " online-only chunks to " + player.getName());
+				boolean isOnlineOnly = args[3].equalsIgnoreCase("onlineonly");
+
+				int maxChunksAllowed;
+				int currentChunks;
+				String chunksType;
+				int maxChunksLimit;
+
+				if (isOnlineOnly) {
+					maxChunksAllowed = getMaxChunksAllowed((Player) player, true);
+					currentChunks = playerData.getOnlineOnlyChunksAmount();
+					chunksType = "online-only";
+					maxChunksLimit = this.instance.config().maxChunksAmountOnlineOnly;
 				} else {
-					sender.sendMessage("Invalid argument " + args[3] + "\n" + usage);
-					return false;
+					maxChunksAllowed = getMaxChunksAllowed((Player) player, false);
+					currentChunks = playerData.getAlwaysOnChunksAmount();
+					chunksType = "always-on";
+					maxChunksLimit = this.instance.config().maxChunksAmountAlwaysOn;
 				}
+
+				if (currentChunks + amount > maxChunksAllowed) {
+					if (args.length != 5 && args[5].equalsIgnoreCase("max")) {
+						amount = maxChunksAllowed - currentChunks;
+					} else if (args.length == 5 || !args[5].equalsIgnoreCase("force")) {
+						sender.sendMessage("Couldn't add " + amount + " " + chunksType + " chunks to " + player.getName() +
+								" because it would exceed the " + chunksType + " chunks limit of " + maxChunksLimit);
+						return false;
+					}
+				}
+
+				if (isOnlineOnly) {
+					DataStoreManager.getDataStore().addOnlineOnlyChunksLimit(player.getUniqueId(), amount);
+				} else {
+					DataStoreManager.getDataStore().addAlwaysOnChunksLimit(player.getUniqueId(), amount);
+				}
+
+				sender.sendMessage("Added " + amount + " " + chunksType + " chunks to " + player.getName());
 			} else {
 				sender.sendMessage("You do not have permission to use this command.");
 				return false;
@@ -277,16 +322,34 @@ public class CommandExec implements CommandExecutor {
 					return false;
 				}
 
-				if (args[3].equalsIgnoreCase("alwayson")) {
-					DataStoreManager.getDataStore().setAlwaysOnChunksLimit(player.getUniqueId(), amount);
-					sender.sendMessage("Set " + amount + " always-on chunks to " + player.getName());
-				} else if (args[3].equalsIgnoreCase("onlineonly")) {
-					DataStoreManager.getDataStore().setOnlineOnlyChunksLimit(player.getUniqueId(), amount);
-					sender.sendMessage("Set " + amount + " online-only chunks to " + player.getName());
+				boolean isOnlineOnly = args[3].equalsIgnoreCase("onlineonly");
+
+				String chunksType;
+				if (isOnlineOnly) {
+					chunksType = "online-only";
 				} else {
-					sender.sendMessage("Invalid argument " + args[3] + "\n" + usage);
+					chunksType = "always-on";
+				}
+
+				int maxChunksLimit;
+				if (isOnlineOnly) {
+					maxChunksLimit = this.instance.config().maxChunksAmountOnlineOnly;
+				} else {
+					maxChunksLimit = this.instance.config().maxChunksAmountAlwaysOn;
+				}
+
+				if (amount > maxChunksLimit) {
+					sender.sendMessage("Cannot set more than " + maxChunksLimit + " " + chunksType + " chunks for " + player.getName());
 					return false;
 				}
+
+				if (isOnlineOnly) {
+					DataStoreManager.getDataStore().setOnlineOnlyChunksLimit(player.getUniqueId(), amount);
+				} else {
+					DataStoreManager.getDataStore().setAlwaysOnChunksLimit(player.getUniqueId(), amount);
+				}
+
+				sender.sendMessage("Set " + amount + " " + chunksType + " chunks to " + player.getName());
 			} else {
 				sender.sendMessage("You do not have permission to use this command.");
 				return false;
@@ -297,6 +360,7 @@ public class CommandExec implements CommandExecutor {
 		}
 
 		return true;
+
 	}
 
 	@SuppressWarnings("deprecation")
@@ -359,7 +423,7 @@ public class CommandExec implements CommandExecutor {
 		sender.sendMessage(ChatColor.RED + "BetterChunkLoader reloaded.");
 		return true;
 	}
-	
+
 	static String chunksInfo(OfflinePlayer player) {
 		IDataStore dataStore = DataStoreManager.getDataStore();
 		int freeAlwaysOn = dataStore.getAlwaysOnFreeChunksAmount(player.getUniqueId());
@@ -367,7 +431,7 @@ public class CommandExec implements CommandExecutor {
 		PlayerData pd=dataStore.getPlayerData(player.getUniqueId());
 		int amountAlwaysOn = pd.getAlwaysOnChunksAmount();
 		int amountOnlineOnly = pd.getOnlineOnlyChunksAmount();
-		
+
 		return ChatColor.GOLD + "=== "+player.getName()+" chunks amount ===\n" + ChatColor.GREEN
 				+ "Always-on - Free: "+freeAlwaysOn+" Used: "+(amountAlwaysOn-freeAlwaysOn)+" Total: "+amountAlwaysOn+"\n"
 				+ "Online-only - Free: "+freeOnlineOnly+" Used: "+(amountOnlineOnly-freeOnlineOnly)+" Total: "+amountOnlineOnly;

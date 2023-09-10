@@ -1,9 +1,7 @@
 package net.arcturus.mc.bcl;
 
-import org.bukkit.Material;
-
 public class Config {
-	public int maxHoursOffline, defaultChunksAmountAlwaysOn, defaultChunksAmountOnlineOnly;
+	public int maxHoursOffline, defaultChunksAmountAlwaysOn, defaultChunksAmountOnlineOnly, maxChunksAmountAlwaysOn, maxChunksAmountOnlineOnly;
 	public String dataStore, mySqlHostname, mySqlUsername, mySqlPassword, mySqlDatabase;
 	public int alwaysOnBlockId, onlineOnlyBlockId, alwaysOnBlockData, onlineOnlyBlockData;
 
@@ -15,6 +13,9 @@ public class Config {
 
 		this.defaultChunksAmountAlwaysOn = instance.getConfig().getInt("DefaultChunksAmount.AlwaysOn", 5);
 		this.defaultChunksAmountOnlineOnly = instance.getConfig().getInt("DefaultChunksAmount.OnlineOnly", 50);
+
+		this.maxChunksAmountAlwaysOn=instance.getConfig().getInt("MaxChunksAmount.AlwaysOn", 55);
+		this.maxChunksAmountOnlineOnly=instance.getConfig().getInt("MaxChunksAmount.OnlineOnly", 150);
 
 		// Parse the block ID and metadata for alwaysOnBlock
 		String alwaysOnBlockConfig = instance.getConfig().getString("alwaysOnBlockId", "57:0");
@@ -35,26 +36,20 @@ public class Config {
 		this.mySqlPassword = instance.getConfig().getString("MySQL.Password");
 		this.mySqlDatabase = instance.getConfig().getString("MySQL.Database");
 
-		String onlineOnlyBlockMaterialName = instance.getConfig().getString("OnlineOnlyBlockMaterial", "IRON_BLOCK");
-		Material onlineOnlyMaterial = Material.getMaterial(onlineOnlyBlockMaterialName);
+		int onlineOnlyBlockId = instance.getConfig().getInt("onlineOnlyBlockId", 42);
+		int onlineOnlyBlockData = instance.getConfig().getInt("onlineOnlyBlockData", 0);
 
-		if (onlineOnlyMaterial == null) {
-			onlineOnlyMaterial = Material.getMaterial(onlineOnlyBlockId);
-			if (onlineOnlyMaterial == null) {
-				onlineOnlyMaterial = Material.IRON_BLOCK;
-				instance.getLogger().warning("Invalid material and ID: " + onlineOnlyBlockMaterialName);
-			}
+		if (onlineOnlyBlockData < 0 || onlineOnlyBlockData > 15) {
+			onlineOnlyBlockData = 0;
+			instance.getLogger().warning("Invalid data value: " + onlineOnlyBlockData);
 		}
 
-		String alwaysOnBlockMaterialName = instance.getConfig().getString("AlwaysOnBlockMaterial", "DIAMOND_BLOCK");
-		Material alwaysOnMaterial = Material.getMaterial(alwaysOnBlockMaterialName);
+		int alwaysOnBlockId = instance.getConfig().getInt("alwaysOnBlockId", 57);
+		int alwaysOnBlockData = instance.getConfig().getInt("alwaysOnBlockData", 0);
 
-		if (alwaysOnMaterial == null) {
-			alwaysOnMaterial = Material.getMaterial(alwaysOnBlockId);
-			if (alwaysOnMaterial == null) {
-				alwaysOnMaterial = Material.DIAMOND_BLOCK;
-				instance.getLogger().warning("Invalid material and ID: " + alwaysOnBlockMaterialName);
-			}
+		if (alwaysOnBlockData < 0 || alwaysOnBlockData > 15) {
+			alwaysOnBlockData = 0;
+			instance.getLogger().warning("Invalid data value: " + alwaysOnBlockData);
 		}
 	}
 }

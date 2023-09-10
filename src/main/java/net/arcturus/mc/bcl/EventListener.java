@@ -28,9 +28,9 @@ public class EventListener implements Listener {
 
 	private BetterChunkLoader instance;
 	private int alwaysOnBlockId;
-	private int alwaysOnBlockData; // Add a variable for block metadata
+	private int alwaysOnBlockData;
 	private int onlineOnlyBlockId;
-	private int onlineOnlyBlockData; // Add a variable for block metadata
+	private int onlineOnlyBlockData;
 
 	EventListener(BetterChunkLoader instance) {
 		this.instance = instance;

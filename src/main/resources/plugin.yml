@@ -1,6 +1,6 @@
 name: BetterChunkLoader
 main: net.arcturus.mc.bcl.BetterChunkLoader
-version: 1.0.3
+version: 1.0.4
 
 commands:
    betterchunkloader:

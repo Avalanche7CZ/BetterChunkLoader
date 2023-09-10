@@ -11,8 +11,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import net.kaikk.mc.bcl.forgelib.ChunkLoader;
 
 import net.minecraft.server.v1_7_R4.Block;
-import net.minecraft.server.v1_7_R4.Item;
-import net.minecraft.server.v1_7_R4.ItemBlock;
+import org.bukkit.Location;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -89,11 +88,13 @@ public class CChunkLoader extends ChunkLoader implements InventoryHolder {
 	}
 
 	public String info() {
+		String type = this.isAlwaysOn ? "Always On" : "Online Only";
 		return ChatColor.GOLD + "== Chunk loader info ==\n"
-				+ ChatColor.WHITE + "Owner: "+this.getOwnerName()+"\n"
-				+ "Position: "+this.loc.toString()+"\n"
-				+ "Chunk: "+this.worldName+":"+this.chunkX+","+this.chunkZ+"\n"
-				+ "Size: "+this.sizeX();
+				+ ChatColor.WHITE + "Owner: " + this.getOwnerName() + "\n"
+				+ "Type: " + type + "\n"
+				+ "Position: " + this.loc.toString() + "\n"
+				+ "Chunk: " + this.worldName + ":" + this.chunkX + "," + this.chunkZ + "\n"
+				+ "Size: " + this.sizeX();
 	}
 
 	public boolean isLoadable() {
@@ -184,7 +185,7 @@ public class CChunkLoader extends ChunkLoader implements InventoryHolder {
 
 	/** Shows the chunk loader's user interface to the specified player */
 	void showUI(Player player) {
-		String title = (this.range!=-1 ? "BCL:"+this.getOwnerName()+"@"+this.getLoc() : "New "+(this.isAdminChunkLoader()?"Admin ":"")+"BetterChunkLoader");
+		String title = (this.range!=-1 ? this.getOwnerName()+"@"+this.getLoc() : "New "+(this.isAdminChunkLoader()?"Admin ":"")+"BetterChunkLoader");
 		if (title.length()>32) {
 			title=title.substring(0, 32);
 		}
@@ -239,3 +240,4 @@ public class CChunkLoader extends ChunkLoader implements InventoryHolder {
 		return adminUUID.equals(this.owner);
 	}
 }
+
