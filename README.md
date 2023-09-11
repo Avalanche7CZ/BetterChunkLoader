@@ -5,6 +5,7 @@ This plugin requires [Vault](https://dev.bukkit.org/bukkit-plugins/vault/) and [
 
 ## Changes
 - Option to set custom ID for Always only and Online only chunk loaders.
-- Permissions 
+- Permissions
+- Option to set limit in config or with permission node (betterchunkloader.onlineonly.number)
 
 
