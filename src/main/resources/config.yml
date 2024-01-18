@@ -23,6 +23,7 @@ DataStore: XML
 # Configuration for MySQL Data Store
 MySQL:
   Hostname: localhost
+  Port: 3306
   Username: BetterChunkLoader
   Password: BetterPassword
   Database: BetterChunkLoader
