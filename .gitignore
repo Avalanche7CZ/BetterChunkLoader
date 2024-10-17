@@ -7,6 +7,7 @@ target/
 *.iml
 .classpath
 .project
+.gradle/
 BetterChunkLoader-2.3.2.jar
 BetterChunkLoader-2.3.2/config.yml
 BetterChunkLoader-2.3.2/META-INF/MANIFEST.MF
