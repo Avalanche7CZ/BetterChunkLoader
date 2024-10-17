@@ -1,6 +1,3 @@
-group 'br.com.finalcraft'
-version '3.1.5'
-
 group = 'eu.avalanche7'
 version = '1.0.4'
 
