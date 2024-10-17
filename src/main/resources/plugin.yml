@@ -1,5 +1,5 @@
 name: BetterChunkLoader
-main: net.arcturus.mc.bcl.BetterChunkLoader
+main: eu.avalanche7.BetterChunkLoader
 version: 1.0.4
 
 commands:

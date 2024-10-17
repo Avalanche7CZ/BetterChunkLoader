@@ -1,13 +1,13 @@
-package net.arcturus.mc.bcl;
+package eu.avalanche7;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import net.arcturus.mc.bcl.datastore.DataStoreManager;
-import net.arcturus.mc.bcl.datastore.IDataStore;
-import net.arcturus.mc.bcl.datastore.PlayerData;
+import eu.avalanche7.datastore.DataStoreManager;
+import eu.avalanche7.datastore.IDataStore;
+import eu.avalanche7.datastore.PlayerData;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;

@@ -1,0 +1,39 @@
+group 'br.com.finalcraft'
+version '3.1.5'
+
+group = 'eu.avalanche7'
+version = '1.0.4'
+
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+
+compileJava.options.encoding = 'UTF-8'
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        name = 'forge'
+        url = 'https://files.minecraftforge.net/maven'
+    }
+    maven {
+        name = 'spigotmc-repo'
+        url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
+    }
+    maven {
+        name = 'craftbukkit-repo'
+        url = 'https://dl.bintray.com/mbax/craftbukkit-repo'
+    }
+}
+
+dependencies {
+    compileOnly files('libs/spigot-1.7.10-SNAPSHOT-b1657.jar')
+    compileOnly files('libs/BCLForgeLib-1.0.jar')
+    compileOnly files('libs/VaultAPI-1.5.jar')
+    compileOnly files('libs/forge-1.7.10-10.13.4.1614-1.7.10-universal.jar')
+
+}

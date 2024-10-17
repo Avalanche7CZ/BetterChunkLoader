@@ -1,9 +1,9 @@
-package net.arcturus.mc.bcl;
+package eu.avalanche7;
 
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-import net.arcturus.mc.bcl.datastore.DataStoreManager;
+import eu.avalanche7.datastore.DataStoreManager;
 import net.kaikk.mc.bcl.forgelib.BCLForgeLib;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;

@@ -1,4 +1,4 @@
-package net.arcturus.mc.bcl.datastore;
+package eu.avalanche7.datastore;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import net.arcturus.mc.bcl.BlockLocation;
-import net.arcturus.mc.bcl.CChunkLoader;
+import eu.avalanche7.CChunkLoader;
+import eu.avalanche7.BlockLocation;
 import net.kaikk.mc.bcl.forgelib.BCLForgeLib;
 
 import org.bukkit.Effect;

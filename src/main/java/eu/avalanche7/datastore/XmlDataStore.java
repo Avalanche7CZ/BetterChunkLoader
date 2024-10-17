@@ -1,4 +1,4 @@
-package net.arcturus.mc.bcl.datastore;
+package eu.avalanche7.datastore;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -15,8 +15,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import net.arcturus.mc.bcl.BetterChunkLoader;
-import net.arcturus.mc.bcl.CChunkLoader;
+import eu.avalanche7.BetterChunkLoader;
+import eu.avalanche7.CChunkLoader;
 
 
 public class XmlDataStore extends AHashMapDataStore {

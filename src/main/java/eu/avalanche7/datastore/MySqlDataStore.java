@@ -1,4 +1,4 @@
-package net.arcturus.mc.bcl.datastore;
+package eu.avalanche7.datastore;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -11,8 +11,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 import java.util.UUID;
-import net.arcturus.mc.bcl.BetterChunkLoader;
-import net.arcturus.mc.bcl.CChunkLoader;
+
+import eu.avalanche7.BetterChunkLoader;
+import eu.avalanche7.CChunkLoader;
 import org.apache.commons.lang.StringUtils;
 
 public class MySqlDataStore extends AHashMapDataStore {

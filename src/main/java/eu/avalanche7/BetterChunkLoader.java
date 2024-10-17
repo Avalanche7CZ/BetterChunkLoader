@@ -1,10 +1,10 @@
-package net.arcturus.mc.bcl;
+package eu.avalanche7;
 
 import java.io.File;
 import java.util.UUID;
-import net.arcturus.mc.bcl.datastore.DataStoreManager;
-import net.arcturus.mc.bcl.datastore.MySqlDataStore;
-import net.arcturus.mc.bcl.datastore.XmlDataStore;
+import eu.avalanche7.datastore.DataStoreManager;
+import eu.avalanche7.datastore.MySqlDataStore;
+import eu.avalanche7.datastore.XmlDataStore;
 import net.kaikk.mc.bcl.forgelib.BCLForgeLib;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -26,13 +26,20 @@ public class BetterChunkLoader extends JavaPlugin {
 		try {
 			Class.forName("net.minecraftforge.common.ForgeVersion");
 		} catch (ClassNotFoundException e) {
-			throw new RuntimeException("Cauldron/KCauldron and BCLForgeLib are needed to run this plugin!");
+			throw new RuntimeException("Thermos/KCauldron/Crucible and BCLForgeLib are needed to run this plugin!");
 		}
 		try {
 			Class.forName("net.kaikk.mc.bcl.forgelib.BCLForgeLib");
 		} catch (ClassNotFoundException e) {
 			throw new RuntimeException("BCLForgeLib is needed to run this plugin!");
 		}
+
+		Bukkit.getConsoleSender().sendMessage("=========================");
+		Bukkit.getConsoleSender().sendMessage("BetterChunkLoader");
+		Bukkit.getConsoleSender().sendMessage("Version " + getDescription().getVersion());
+		Bukkit.getConsoleSender().sendMessage("Fork Author: Avalanche7CZ");
+		Bukkit.getConsoleSender().sendMessage("=========================");
+
 		instance = this;
 		try {
 			getLogger().info("Loading config...");

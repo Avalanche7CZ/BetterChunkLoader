@@ -1,11 +1,11 @@
-package net.arcturus.mc.bcl.datastore;
+package eu.avalanche7.datastore;
 
 import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import net.arcturus.mc.bcl.BetterChunkLoader;
+import eu.avalanche7.BetterChunkLoader;
 
 @XmlRootElement
 public class PlayerData {
@@ -16,7 +16,7 @@ public class PlayerData {
 	
 	public PlayerData(UUID playerId) {
 		this.playerId = playerId;
-		this.alwaysOnChunksAmount=BetterChunkLoader.instance().config().defaultChunksAmountAlwaysOn;
+		this.alwaysOnChunksAmount= BetterChunkLoader.instance().config().defaultChunksAmountAlwaysOn;
 		this.onlineOnlyChunksAmount=BetterChunkLoader.instance().config().defaultChunksAmountOnlineOnly;
 	}
 

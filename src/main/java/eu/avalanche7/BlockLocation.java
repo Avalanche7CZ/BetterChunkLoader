@@ -1,4 +1,4 @@
-package net.arcturus.mc.bcl;
+package eu.avalanche7;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
