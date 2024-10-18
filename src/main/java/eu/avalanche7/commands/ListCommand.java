@@ -103,7 +103,7 @@ public class ListCommand {
                         "Created: " + chunkLoader.getCreationDate().toString();
 
                 message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(hoverText).create()));
-                message.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tp " + chunkLoader.getLoc().getX() + " " + chunkLoader.getLoc().getY() + " " + chunkLoader.getLoc().getZ()));
+                message.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tppos " + chunkLoader.getLoc().getWorldName() + "  " + chunkLoader.getLoc().getX() + " " + chunkLoader.getLoc().getY() + " " + chunkLoader.getLoc().getZ()));
 
                 ((Player) sender).spigot().sendMessage(message);
             }
@@ -134,7 +134,7 @@ public class ListCommand {
                     "Created: " + chunkLoader.getCreationDate().toString();
 
             message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(hoverText).create()));
-            message.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tp " + chunkLoader.getLoc().getX() + " " + chunkLoader.getLoc().getY() + " " + chunkLoader.getLoc().getZ()));
+            message.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tppos " + chunkLoader.getLoc().getWorldName() + "  " + chunkLoader.getLoc().getX() + " " + chunkLoader.getLoc().getY() + " " + chunkLoader.getLoc().getZ()));
 
             ((Player) sender).spigot().sendMessage(message);
         }
