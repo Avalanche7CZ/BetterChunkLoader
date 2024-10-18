@@ -54,8 +54,12 @@ public class InfoCommand {
                 maxChunksPlayer = entry.getKey();
             }
         }
-        sender.sendMessage(ChatColor.GOLD + "=== BetterChunkLoader statistics ===\n" + ChatColor.WHITE + "OnlineOnly: " + onlineOnlyLoaders + " chunk loaders (" + onlineOnlyChunks + " chunks)\nAlwaysOn: " + alwaysOnLoaders + " chunk loaders (" + alwaysOnChunks + " chunks)\nNumber of players using chunk loaders: " + players + "\nPlayer with the highest loaded chunks amount: " + this.instance
-                .getServer().getOfflinePlayer(maxChunksPlayer).getName() + " (" + maxChunksCount + " chunks)\n");
+        String maxChunksPlayerName = maxChunksPlayer != null ? this.instance.getServer().getOfflinePlayer(maxChunksPlayer).getName() : "N/A";
+        sender.sendMessage(ChatColor.GOLD + "=== BetterChunkLoader Statistics ===");
+        sender.sendMessage(ChatColor.WHITE + String.format("OnlineOnly Loaders: %d (%d chunks)", onlineOnlyLoaders, onlineOnlyChunks));
+        sender.sendMessage(ChatColor.WHITE + String.format("AlwaysOn Loaders: %d (%d chunks)", alwaysOnLoaders, alwaysOnChunks));
+        sender.sendMessage(ChatColor.WHITE + String.format("Players using loaders: %d", players));
+        sender.sendMessage(ChatColor.WHITE + String.format("Top Player: %s (%d chunks)", maxChunksPlayerName, maxChunksCount));
         return true;
     }
 }

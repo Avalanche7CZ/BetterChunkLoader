@@ -2,17 +2,26 @@ package eu.avalanche7.commands;
 
 import eu.avalanche7.BetterChunkLoader;
 import eu.avalanche7.CChunkLoader;
+import eu.avalanche7.CommandExec;
 import eu.avalanche7.PermissionNode;
 import eu.avalanche7.datastore.DataStoreManager;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.apache.commons.lang.StringUtils.repeat;
+
 public class ListCommand {
     private BetterChunkLoader instance;
+    CommandExec commandExec = new CommandExec(instance);
 
     public ListCommand(BetterChunkLoader instance) {
         this.instance = instance;
@@ -20,7 +29,11 @@ public class ListCommand {
 
     public boolean list(CommandSender sender, String label, String[] args) {
         if (args.length < 2) {
-            sender.sendMessage(ChatColor.GOLD + "Usage: /bcl list (own|PlayerName|all) [page]");
+            Player player = (Player) sender;
+            player.sendMessage(ChatColor.GREEN + repeat("\u2500", 20));
+            commandExec.sendInteractiveMessage(player, label, "list own", "Show list of your chunkloaders.", ChatColor.YELLOW, ChatColor.AQUA);
+            commandExec.sendInteractiveMessage(player, label, "list PlayerName", "Show list of chunkloaders for specific player", ChatColor.YELLOW, ChatColor.AQUA);
+            commandExec.sendInteractiveMessage(player, label, "list all", "Show list of all chunkloaders", ChatColor.YELLOW, ChatColor.AQUA);
             return false;
         }
         int page = 1;
@@ -79,10 +92,20 @@ public class ListCommand {
                 return false;
             }
             sender.sendMessage(ChatColor.GOLD + "== " + player.getName() + " chunk loaders list (" + page + "/" + pages + ") ==");
-            sender.sendMessage(ChatColor.GRAY + "(AlwaysOn - Size - Position)");
             for (int i = (page - 1) * 5; i < page * 5 && i < clSize; i++) {
                 CChunkLoader chunkLoader = clList.get(i);
-                sender.sendMessage(chunkLoader.toString());
+                TextComponent message = new TextComponent(ChatColor.YELLOW + chunkLoader.getOwnerName() + " - " + chunkLoader.getLoc());
+
+                String hoverText = ChatColor.AQUA + "Owner: " + chunkLoader.getOwnerName() + "\n" +
+                        "AlwaysOn: " + (chunkLoader.isAlwaysOn() ? "Yes" : "No") + "\n" +
+                        "Size: " + chunkLoader.sizeX() + "\n" +
+                        "Position: " + chunkLoader.getLoc().toString() + "\n" +
+                        "Created: " + chunkLoader.getCreationDate().toString();
+
+                message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(hoverText).create()));
+                message.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tp " + chunkLoader.getLoc().getX() + " " + chunkLoader.getLoc().getY() + " " + chunkLoader.getLoc().getZ()));
+
+                ((Player) sender).spigot().sendMessage(message);
             }
         }
         return true;
@@ -100,10 +123,20 @@ public class ListCommand {
             return false;
         }
         sender.sendMessage(ChatColor.GOLD + "== Chunk loaders list (" + page + "/" + pages + ") ==");
-        sender.sendMessage(ChatColor.GRAY + "(Owner - AlwaysOn - Size - Position)");
         for (int i = (page - 1) * 5; i < page * 5 && i < clSize; i++) {
             CChunkLoader chunkLoader = clList.get(i);
-            sender.sendMessage(chunkLoader.getOwnerName() + " - " + chunkLoader.toString());
+            TextComponent message = new TextComponent(ChatColor.YELLOW + chunkLoader.getOwnerName() + " - " + chunkLoader.getLoc());
+
+            String hoverText = ChatColor.AQUA + "Owner: " + chunkLoader.getOwnerName() + "\n" +
+                    "AlwaysOn: " + (chunkLoader.isAlwaysOn() ? "Yes" : "No") + "\n" +
+                    "Size: " + chunkLoader.sizeX() + "\n" +
+                    "Position: " + chunkLoader.getLoc().toString() + "\n" +
+                    "Created: " + chunkLoader.getCreationDate().toString();
+
+            message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(hoverText).create()));
+            message.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tp " + chunkLoader.getLoc().getX() + " " + chunkLoader.getLoc().getY() + " " + chunkLoader.getLoc().getZ()));
+
+            ((Player) sender).spigot().sendMessage(message);
         }
         return true;
     }

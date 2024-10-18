@@ -18,7 +18,7 @@ import org.bukkit.entity.Player;
 public class CommandExec implements CommandExecutor {
 	BetterChunkLoader instance;
 
-	CommandExec(BetterChunkLoader instance) {
+	public CommandExec(BetterChunkLoader instance) {
 		this.instance = instance;
 	}
 
@@ -67,7 +67,7 @@ public class CommandExec implements CommandExecutor {
 		}
 	}
 
-	private String repeat(String str, int count) {
+	public String repeat(String str, int count) {
 		StringBuilder builder = new StringBuilder();
 		for (int i = 0; i < count; i++) {
 			builder.append(str);
@@ -75,7 +75,7 @@ public class CommandExec implements CommandExecutor {
 		return builder.toString();
 	}
 
-	private void sendInteractiveMessage(Player player, String label, String command, String description, ChatColor commandColor, ChatColor descriptionColor) {
+	public void sendInteractiveMessage(Player player, String label, String command, String description, ChatColor commandColor, ChatColor descriptionColor) {
 		TextComponent arrow = new TextComponent(ChatColor.BLUE + " > ");
 		TextComponent message = new TextComponent(commandColor + "/" + label + " " + command);
 		message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(descriptionColor + description).create()));
