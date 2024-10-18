@@ -1,5 +1,6 @@
-package eu.avalanche7;
+package eu.avalanche7.config;
 
+import eu.avalanche7.BetterChunkLoader;
 import org.bukkit.Material;
 
 public class Config {
@@ -29,7 +30,7 @@ public class Config {
 
 	public int onlineOnlyBlockData;
 
-	Config(BetterChunkLoader instance) {
+	public Config(BetterChunkLoader instance) {
 		instance.getConfig().options().copyDefaults(true);
 		instance.saveDefaultConfig();
 		this.maxHoursOffline = instance.getConfig().getInt("MaxHoursOffline", 168);

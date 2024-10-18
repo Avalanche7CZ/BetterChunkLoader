@@ -1,21 +1,23 @@
 package eu.avalanche7;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import net.kaikk.mc.bcl.forgelib.ChunkLoader;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.Effect;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
@@ -31,6 +33,7 @@ public class CChunkLoader extends ChunkLoader implements InventoryHolder {
 	private boolean isAlwaysOn;
 
 	public CChunkLoader() {}
+	private Map<UUID, BukkitTask> currentVisualizations = new HashMap<>();
 
 	public CChunkLoader(int chunkX, int chunkZ, String worldName, byte range, UUID owner, BlockLocation loc, Date creationDate, boolean isAlwaysOn) {
 		super(chunkX, chunkZ, worldName, range);
@@ -46,6 +49,59 @@ public class CChunkLoader extends ChunkLoader implements InventoryHolder {
 		this.owner = owner;
 		this.creationDate = creationDate;
 		this.isAlwaysOn = isAlwaysOn;
+	}
+
+
+	public void showCorners(Player player) {
+		World world = Bukkit.getWorld(worldName);
+		BukkitTask task = new BukkitRunnable() {
+			@Override
+			public void run() {
+				if (!player.isOnline()) {
+					this.cancel();
+					return;
+				}
+				for (int z = chunkZ - range; z <= chunkZ + range; z++) {
+					for (int x = chunkX - range; x <= chunkX + range; x++) {
+						for (int y = 0; y <= 255; y++) {
+							Location loc1 = new Location(world, (x << 4), y, (z << 4));
+							player.playEffect(loc1, Effect.MOBSPAWNER_FLAMES, null);
+							Location loc2 = new Location(world, (x << 4) + 15, y, (z << 4));
+							player.playEffect(loc2, Effect.MOBSPAWNER_FLAMES, null);
+							Location loc3 = new Location(world, (x << 4), y, (z << 4) + 15);
+							player.playEffect(loc3, Effect.MOBSPAWNER_FLAMES, null);
+							Location loc4 = new Location(world, (x << 4) + 15, y, (z << 4) + 15);
+							player.playEffect(loc4, Effect.MOBSPAWNER_FLAMES, null);
+						}
+					}
+				}
+			}
+		}.runTaskTimer(BetterChunkLoader.instance(), 0L, 20L);
+
+		BukkitTask previousTask = this.currentVisualizations.put(player.getUniqueId(), task);
+		if (previousTask != null) {
+			previousTask.cancel();
+		}
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				hideCorners(player);
+			}
+		}.runTaskLater(BetterChunkLoader.instance(), 600L);
+	}
+	public void hideCorners(Player player) {
+		UUID playerId = player.getUniqueId();
+		BukkitTask task = this.currentVisualizations.get(playerId);
+
+		if (task != null) {
+			new BukkitRunnable() {
+				@Override
+				public void run() {
+					task.cancel();
+					currentVisualizations.remove(playerId);
+				}
+			}.runTaskLater(BetterChunkLoader.instance(), 600L);
+		}
 	}
 
 	public boolean isExpired() {
@@ -217,3 +273,5 @@ public class CChunkLoader extends ChunkLoader implements InventoryHolder {
 		return adminUUID.equals(this.owner);
 	}
 }
+
+

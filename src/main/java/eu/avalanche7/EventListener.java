@@ -83,6 +83,9 @@ public class EventListener implements Listener {
 				}
 			} else if (chunkLoader != null) {
 				player.sendMessage(chunkLoader.info());
+				if (player.isSneaking()) {
+					chunkLoader.showCorners(player);
+				}
 			} else {
 				player.sendMessage(ChatColor.GOLD + "This Blocks can be converted into chunk loaders. Right click it with a blaze rod.");
 			}

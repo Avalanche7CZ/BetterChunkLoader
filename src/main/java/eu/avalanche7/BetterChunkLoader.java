@@ -2,6 +2,8 @@ package eu.avalanche7;
 
 import java.io.File;
 import java.util.UUID;
+
+import eu.avalanche7.config.Config;
 import eu.avalanche7.datastore.DataStoreManager;
 import eu.avalanche7.datastore.MySqlDataStore;
 import eu.avalanche7.datastore.XmlDataStore;
