@@ -2,6 +2,7 @@ package eu.avalanche7.commands;
 
 import eu.avalanche7.BetterChunkLoader;
 import eu.avalanche7.CChunkLoader;
+import eu.avalanche7.PermissionNode;
 import eu.avalanche7.datastore.DataStoreManager;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -33,14 +34,14 @@ public class ListCommand {
             }
         }
         if (args[1].equalsIgnoreCase("all")) {
-            if (!sender.hasPermission("betterchunkloader.list.others")) {
+            if (!sender.hasPermission(PermissionNode.COMMAND_LIST_OTHER)) {
                 sender.sendMessage(ChatColor.RED + "You don't have permission to run this command.");
                 return false;
             }
             List<CChunkLoader> clList = DataStoreManager.getDataStore().getChunkLoaders();
             printChunkLoadersList(clList, sender, page);
         } else if (args[1].equalsIgnoreCase("alwayson")) {
-            if (!sender.hasPermission("betterchunkloader.list.others")) {
+            if (!sender.hasPermission(PermissionNode.COMMAND_LIST_OTHER)) {
                 sender.sendMessage(ChatColor.RED + "You don't have permission to run this command.");
                 return false;
             }
@@ -53,11 +54,11 @@ public class ListCommand {
             String playerName = args[1];
             if (playerName.equalsIgnoreCase("own")) playerName = sender.getName();
             if (sender.getName().equalsIgnoreCase(playerName)) {
-                if (!sender.hasPermission("betterchunkloader.list.own")) {
+                if (!sender.hasPermission(PermissionNode.COMMAND_LIST_OWN)) {
                     sender.sendMessage(ChatColor.RED + "You don't have permission to run this command.");
                     return false;
                 }
-            } else if (!sender.hasPermission("betterchunkloader.list.others")) {
+            } else if (!sender.hasPermission(PermissionNode.COMMAND_LIST_OTHER)) {
                 sender.sendMessage(ChatColor.RED + "You don't have permission to run this command.");
                 return false;
             }

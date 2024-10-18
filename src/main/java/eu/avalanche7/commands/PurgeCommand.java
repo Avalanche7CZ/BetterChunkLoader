@@ -2,6 +2,7 @@ package eu.avalanche7.commands;
 
 import eu.avalanche7.BetterChunkLoader;
 import eu.avalanche7.CChunkLoader;
+import eu.avalanche7.PermissionNode;
 import eu.avalanche7.datastore.DataStoreManager;
 import eu.avalanche7.datastore.IDataStore;
 import org.bukkit.ChatColor;
@@ -18,7 +19,7 @@ public class PurgeCommand {
     }
 
     public boolean purge(CommandSender sender) {
-        if (!sender.hasPermission("betterchunkloader.purge")) {
+        if (!sender.hasPermission(PermissionNode.COMMAND_PURGE)) {
             sender.sendMessage(ChatColor.RED + "You don't have permission to run this command.");
             return false;
         }

@@ -54,7 +54,7 @@ public class EventListener implements Listener {
 			CChunkLoader chunkLoader = DataStoreManager.getDataStore().getChunkLoaderAt(new BlockLocation(clickedBlock.getLocation()));
 			if (player.getItemInHand().getType() == Material.BLAZE_ROD) {
 				if (chunkLoader != null) {
-					if (player.getUniqueId().equals(chunkLoader.getOwner()) || player.hasPermission("betterchunkloader.edit") || (chunkLoader.isAdminChunkLoader() && player.hasPermission("betterchunkloader.adminloader"))) {
+					if (player.getUniqueId().equals(chunkLoader.getOwner()) || player.hasPermission(PermissionNode.ADMIN_EDIT_ALL) || (chunkLoader.isAdminChunkLoader() && player.hasPermission(PermissionNode.ADMIN_LOADER))) {
 						chunkLoader.showUI(player);
 					} else {
 						player.sendMessage(ChatColor.RED + "You can't edit others' chunk loaders.");
@@ -62,14 +62,14 @@ public class EventListener implements Listener {
 				} else if (canBreak(clickedBlock, player)) {
 					UUID uid = player.getUniqueId();
 					if (clickedBlock.getTypeId() == this.alwaysOnBlockId && clickedBlock.getData() == this.alwaysOnBlockData) {
-						if (!player.hasPermission("betterchunkloader.alwayson")) {
+						if (!player.hasPermission(PermissionNode.CHUNK_ALWAYSON)) {
 							player.sendMessage(ChatColor.RED + "You don't have the permission to create always-on chunk loaders." + (player.isOp() ? " (betterchunkloader.alwayson is needed)" : ""));
 							return;
 						}
-						if (player.isSneaking() && player.hasPermission("betterchunkloader.adminloader"))
+						if (player.isSneaking() && player.hasPermission(PermissionNode.ADMIN_LOADER))
 							uid = CChunkLoader.adminUUID;
 					} else if (clickedBlock.getTypeId() == this.onlineOnlyBlockId && clickedBlock.getData() == this.onlineOnlyBlockData) {
-						if (!player.hasPermission("betterchunkloader.onlineonly")) {
+						if (!player.hasPermission(PermissionNode.CHUNK_ONLINEONLY)) {
 							player.sendMessage(ChatColor.RED + "You don't have the permission to create online-only chunk loaders." + (player.isOp() ? " (betterchunkloader.onlineonly is needed)" : ""));
 							return;
 						}
@@ -137,11 +137,11 @@ public class EventListener implements Listener {
 			if (chunkLoader == null)
 				return;
 			if (chunkLoader.isAdminChunkLoader()) {
-				if (!player.hasPermission("betterchunkloader.adminloader")) {
+				if (!player.hasPermission(PermissionNode.ADMIN_LOADER)) {
 					player.sendMessage(ChatColor.RED + "You don't have permissions for this!");
 					return;
 				}
-			} else if (!player.getUniqueId().equals(chunkLoader.getOwner()) && !player.hasPermission("betterchunkloader.edit")) {
+			} else if (!player.getUniqueId().equals(chunkLoader.getOwner()) && !player.hasPermission(PermissionNode.ADMIN_EDIT_ALL)) {
 				player.sendMessage(ChatColor.RED + "You can't edit others' chunk loaders.");
 				return;
 			}
@@ -152,7 +152,7 @@ public class EventListener implements Listener {
 					closeInventory(player);
 				} else if (pos > 1 && pos < 7) {
 					pos = (byte)(pos - 2);
-					if (!chunkLoader.isAdminChunkLoader() && !player.hasPermission("betterchunkloader.unlimitedchunks") &&
+					if (!chunkLoader.isAdminChunkLoader() && !player.hasPermission(PermissionNode.CHUNKS_UNLIMITED) &&
 							pos > chunkLoader.getRange()) {
 						int available, needed = (1 + pos * 2) * (1 + pos * 2) - chunkLoader.size();
 						if (chunkLoader.isAlwaysOn()) {
@@ -173,7 +173,7 @@ public class EventListener implements Listener {
 				}
 			} else if (pos > 1 && pos < 7) {
 				pos = (byte)(pos - 2);
-				if (!chunkLoader.isAdminChunkLoader() && !player.hasPermission("betterchunkloader.unlimitedchunks")) {
+				if (!chunkLoader.isAdminChunkLoader() && !player.hasPermission(PermissionNode.CHUNKS_UNLIMITED)) {
 					int available, needed = (1 + pos * 2) * (1 + pos * 2);
 					if (chunkLoader.isAlwaysOn()) {
 						available = DataStoreManager.getDataStore().getAlwaysOnFreeChunksAmount(chunkLoader.getOwner());

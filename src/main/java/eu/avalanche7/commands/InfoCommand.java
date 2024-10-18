@@ -2,6 +2,7 @@ package eu.avalanche7.commands;
 
 import eu.avalanche7.BetterChunkLoader;
 import eu.avalanche7.CChunkLoader;
+import eu.avalanche7.PermissionNode;
 import eu.avalanche7.datastore.DataStoreManager;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -19,7 +20,7 @@ public class InfoCommand {
     }
 
     public boolean info(CommandSender sender) {
-        if (!sender.hasPermission("betterchunkloader.info")) {
+        if (!sender.hasPermission(PermissionNode.COMMAND_INFO)) {
             sender.sendMessage(ChatColor.RED + "You don't have permission to run this command.");
             return false;
         }

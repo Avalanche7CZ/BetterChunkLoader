@@ -1,6 +1,7 @@
 package eu.avalanche7.commands;
 
 import eu.avalanche7.BetterChunkLoader;
+import eu.avalanche7.PermissionNode;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -14,7 +15,7 @@ public class ReloadCommand {
     }
 
     public boolean reload(CommandSender sender) {
-        if (!sender.hasPermission("betterchunkloader.reload")) {
+        if (!sender.hasPermission(PermissionNode.COMMAND_ADMIN)) {
             sender.sendMessage(ChatColor.RED + "You don't have permission to run this command.");
             return false;
         }

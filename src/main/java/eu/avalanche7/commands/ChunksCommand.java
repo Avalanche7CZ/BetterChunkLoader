@@ -1,6 +1,7 @@
 package eu.avalanche7.commands;
 
 import eu.avalanche7.BetterChunkLoader;
+import eu.avalanche7.PermissionNode;
 import eu.avalanche7.datastore.DataStoreManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -23,7 +24,7 @@ public class ChunksCommand {
             sender.sendMessage(chunksInfo((OfflinePlayer)sender));
             return false;
         }
-        if (!sender.hasPermission("betterchunkloader.chunks")) {
+        if (!sender.hasPermission(PermissionNode.COMMAND_CHUNKS)) {
             sender.sendMessage(ChatColor.RED + "You don't have permission to run this command.");
             return false;
         }
@@ -40,7 +41,7 @@ public class ChunksCommand {
         }
         sender.sendMessage(chunksInfo(player));
         if (args[1].equalsIgnoreCase("add")) {
-            if (sender.hasPermission("betterchunkloaders.chunks.add")) {
+            if (sender.hasPermission(PermissionNode.COMMAND_CHUNKS_ADD)) {
                 if (args[3].equalsIgnoreCase("alwayson")) {
                     DataStoreManager.getDataStore().addAlwaysOnChunksLimit(player.getUniqueId(), amount.intValue());
                     sender.sendMessage("Added " + amount + " always-on chunks to " + player.getName());
@@ -56,7 +57,7 @@ public class ChunksCommand {
                 return false;
             }
         } else if (args[1].equalsIgnoreCase("set")) {
-            if (sender.hasPermission("betterchunkloaders.chunks.set")) {
+            if (sender.hasPermission(PermissionNode.COMMAND_CHUNKS_SET)) {
                 if (amount.intValue() < 0) {
                     sender.sendMessage("Invalid argument " + args[4] + "\n" + usage);
                     return false;
