@@ -36,6 +36,13 @@ public class BetterChunkLoader extends JavaPlugin {
 			throw new RuntimeException("BCLForgeLib is needed to run this plugin!");
 		}
 
+		if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+			new PlaceHolderIntegration(this).register();
+			getLogger().info("PlaceholderAPI found and integrated.");
+		} else {
+			getLogger().warning("PlaceholderAPI not found. Placeholders will not be available.");
+		}
+
 		Bukkit.getConsoleSender().sendMessage("=========================");
 		Bukkit.getConsoleSender().sendMessage("BetterChunkLoader");
 		Bukkit.getConsoleSender().sendMessage("Version " + getDescription().getVersion());
