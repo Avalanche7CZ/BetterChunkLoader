@@ -11,5 +11,5 @@ If anyone is interested in contributing to BetterChunkLoader or has some ideas t
 - Option to set limit in config or with permission node (betterchunkloader.onlineonly.number)
 - PAPI Integration
 - Interactive messages
-- Option to teleport to chunkloader (Needs a permission for /tppos)
+- Option to teleport to chunkloader (Needs a permission for /tppos (modified Essentials Plugin))
 
