@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import eu.avalanche7.config.Config;
 import eu.avalanche7.datastore.DataStoreManager;
+import eu.avalanche7.datastore.MariaDBDataStore;
 import eu.avalanche7.datastore.MySqlDataStore;
 import eu.avalanche7.datastore.XmlDataStore;
 import net.kaikk.mc.bcl.forgelib.BCLForgeLib;
@@ -20,8 +21,11 @@ public class BetterChunkLoader extends JavaPlugin {
 	private Config config;
 
 	public void onLoad() {
+		instance = this;
 		DataStoreManager.registerDataStore("XML", XmlDataStore.class);
 		DataStoreManager.registerDataStore("MySQL", MySqlDataStore.class);
+		DataStoreManager.registerDataStore("MariaDB", MariaDBDataStore.class);
+
 	}
 
 	public void onEnable() {

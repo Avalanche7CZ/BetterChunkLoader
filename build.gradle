@@ -1,33 +1,19 @@
+plugins {
+    id 'java'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
+}
+
 group = 'eu.avalanche7'
 version = '1.0.5'
 
-apply plugin: 'java'
-
 sourceCompatibility = 1.8
-
-compileJava.options.encoding = 'UTF-8'
-
-tasks.withType(JavaCompile) {
-    options.encoding = 'UTF-8'
-}
 
 repositories {
     mavenCentral()
-    maven {
-        name = 'forge'
-        url = 'https://files.minecraftforge.net/maven'
-    }
-    maven {
-        name = 'spigotmc-repo'
-        url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
-    }
-    maven {
-        url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/'
-    }
-    maven {
-        name = 'craftbukkit-repo'
-        url = 'https://dl.bintray.com/mbax/craftbukkit-repo'
-    }
+    maven { url = 'https://files.minecraftforge.net/maven' }
+    maven { url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
+    maven { url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/' }
+    maven { url = 'https://dl.bintray.com/mbax/craftbukkit-repo' }
 }
 
 dependencies {
@@ -36,5 +22,24 @@ dependencies {
     compileOnly files('libs/VaultAPI-1.5.jar')
     compileOnly files('libs/forge-1.7.10-10.13.4.1614-1.7.10-universal.jar')
     compileOnly files('libs/PlaceholderAPI-2.11.6.jar')
+    implementation 'mysql:mysql-connector-java:8.0.28'
+    implementation 'org.mariadb.jdbc:mariadb-java-client:3.3.3'
+}
 
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+shadowJar {
+    dependencies {
+        include dependency("org.mariadb.jdbc:mariadb-java-client:3.3.3")
+        //include dependency("mysql:mysql-connector-java:8.0.28")
+    }
+    relocate("org.mariadb.jdbc", "eu.avalanche7.lib.mariadb")
+    relocate("com.mysql.cj", "eu.avalanche7.lib.mysql")
+    archiveClassifier.set('Shadow')
+}
+
+tasks.build {
+    dependsOn shadowJar
 }
