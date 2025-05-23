@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'eu.avalanche7'
-version = '1.0.6'
+version = '1.0.7'
 
 sourceCompatibility = 1.8
 
@@ -24,6 +24,9 @@ dependencies {
     compileOnly files('libs/PlaceholderAPI-2.11.6.jar')
     implementation 'mysql:mysql-connector-java:8.0.28'
     implementation 'org.mariadb.jdbc:mariadb-java-client:3.3.3'
+    implementation 'javax.xml.bind:jaxb-api:2.3.1'
+    implementation 'org.glassfish.jaxb:jaxb-runtime:2.3.1'
+
 }
 
 tasks.withType(JavaCompile) {
