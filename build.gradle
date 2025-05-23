@@ -18,7 +18,7 @@ repositories {
 
 dependencies {
     compileOnly files('libs/spigot-1.7.10-SNAPSHOT-b1657.jar')
-    compileOnly files('libs/BCLForgeLib-1.0.jar')
+    compileOnly files('libs/BCLFORGELIB.jar')
     compileOnly files('libs/VaultAPI-1.5.jar')
     compileOnly files('libs/forge-1.7.10-10.13.4.1614-1.7.10-universal.jar')
     compileOnly files('libs/PlaceholderAPI-2.11.6.jar')
