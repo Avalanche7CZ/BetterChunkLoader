@@ -8,6 +8,9 @@ DefaultChunksAmount:
   AlwaysOn: 5
   OnlineOnly: 50
 
+# Maximum range for chunkloaders (0=1x1, 1=3x3, 2=5x5, 3=7x7, 4=9x9)
+MaxRange: 4
+
 # Max amount of chunks for each player
 MaxChunksAmount:
   AlwaysOn: 50

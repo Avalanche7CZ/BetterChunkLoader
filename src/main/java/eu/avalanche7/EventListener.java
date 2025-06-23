@@ -208,6 +208,11 @@ public class EventListener implements Listener {
 					closeInventory(player);
 				} else if (pos >= 2 && pos <= 6) {
 					byte newRange = (byte)(pos - 2);
+					if (newRange > this.pluginInstance.config().maxRange) {
+						player.sendMessage(ChatColor.RED + "That range is too large! The maximum is " + this.pluginInstance.config().maxRange);
+						closeInventory(player);
+						return;
+					}
 					if (!chunkLoader.isAdminChunkLoader() && !player.hasPermission(PermissionNode.CHUNKS_UNLIMITED)) {
 						int currentSize = chunkLoader.size();
 						int newSize = (1 + newRange * 2) * (1 + newRange * 2);
@@ -234,6 +239,11 @@ public class EventListener implements Listener {
 			} else {
 				if (pos >= 2 && pos <= 6) {
 					byte newRange = (byte)(pos - 2);
+					if (newRange > this.pluginInstance.config().maxRange) {
+						player.sendMessage(ChatColor.RED + "That range is too large! The maximum is " + this.pluginInstance.config().maxRange);
+						closeInventory(player);
+						return;
+					}
 					if (!chunkLoader.isAdminChunkLoader() && !player.hasPermission(PermissionNode.CHUNKS_UNLIMITED)) {
 						int needed = (1 + newRange * 2) * (1 + newRange * 2);
 						int available;

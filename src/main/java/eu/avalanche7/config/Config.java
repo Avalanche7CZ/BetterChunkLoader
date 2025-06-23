@@ -10,6 +10,8 @@ public class Config {
 
 	public int defaultChunksAmountOnlineOnly;
 
+	public int maxRange;
+
 	public String dataStore;
 
 	public String mySqlHostname;
@@ -36,6 +38,7 @@ public class Config {
 		this.maxHoursOffline = instance.getConfig().getInt("MaxHoursOffline", 168);
 		this.defaultChunksAmountAlwaysOn = instance.getConfig().getInt("DefaultChunksAmount.AlwaysOn", 5);
 		this.defaultChunksAmountOnlineOnly = instance.getConfig().getInt("DefaultChunksAmount.OnlineOnly", 50);
+		this.maxRange = instance.getConfig().getInt("MaxRange", 0);
 		String alwaysOnBlockConfig = instance.getConfig().getString("alwaysOnBlockId", "57:0");
 		String[] alwaysOnBlockParts = alwaysOnBlockConfig.split(":");
 		this.alwaysOnBlockId = Integer.parseInt(alwaysOnBlockParts[0]);

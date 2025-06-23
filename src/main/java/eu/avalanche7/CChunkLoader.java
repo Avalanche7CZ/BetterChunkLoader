@@ -229,7 +229,8 @@ public class CChunkLoader extends ChunkLoader implements InventoryHolder {
 		Inventory inventory = Bukkit.createInventory(this, 9, title);
 		addInventoryOption(inventory, 0, Material.REDSTONE_TORCH_ON, "Remove");
 		byte i;
-		for (i = 0; i < 5; i = (byte)(i + 1))
+		int maxRange = BetterChunkLoader.instance().config().maxRange;
+		for (i = 0; i <= maxRange && i < 5; i = (byte)(i + 1))
 			addInventoryOption(inventory, i + 2, Material.MAP, "Size " + sizeX(i) + ((getRange() == i) ? " [selected]" : ""));
 		player.openInventory(inventory);
 	}
@@ -273,5 +274,3 @@ public class CChunkLoader extends ChunkLoader implements InventoryHolder {
 		return adminUUID.equals(this.owner);
 	}
 }
-
-
